@@ -13,6 +13,7 @@ function initializeSwiper() {
     effect: "cards",
     grabCursor: true,
     loop: false,
+    initialSlide: 1, // <-- Start from slide 2 (index 1)
     keyboard: true,
     navigation: {
       nextEl: ".arrow.is-right",
