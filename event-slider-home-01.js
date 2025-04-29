@@ -13,36 +13,40 @@ function initializeSwiper() {
     effect: "cards",
     grabCursor: true,
     loop: false,
-    initialSlide: 1, // <-- Start from slide 2 (index 1)
     keyboard: true,
     navigation: {
       nextEl: ".arrow.is-right",
       prevEl: ".arrow.is-left"
     },
     on: {
+      init: function () {
+        // Force go to slide 2 (index 1) AFTER swiper ready
+        this.slideTo(1, 0); // (slideIndex, speed in ms)
+        updateActiveTexts(1); // Update text display for slide 2
+      },
       slideChange: function () {
-        let activeIndex = this.activeIndex;
-
-        // Function to handle text elements
-        function handleTextElements(className) {
-          document.querySelectorAll(className).forEach(function(text) {
-            text.style.opacity = '0';
-            text.style.display = 'none';
-          });
-          let activeElement = document.querySelector(className + '[data-index="' + activeIndex + '"]');
-          if (activeElement) {
-            activeElement.style.opacity = '1';
-            activeElement.style.display = 'block';
-          }
-        }
-
-        // Handle all text elements
-        handleTextElements('.text-slide');
-        handleTextElements('.text-slide-name');
-        handleTextElements('.text-slide-job');
+        updateActiveTexts(this.activeIndex);
       }
     }
   });
+
+  function updateActiveTexts(activeIndex) {
+    function handleTextElements(className) {
+      document.querySelectorAll(className).forEach(function(text) {
+        text.style.opacity = '0';
+        text.style.display = 'none';
+      });
+      let activeElement = document.querySelector(className + '[data-index="' + activeIndex + '"]');
+      if (activeElement) {
+        activeElement.style.opacity = '1';
+        activeElement.style.display = 'block';
+      }
+    }
+
+    handleTextElements('.text-slide');
+    handleTextElements('.text-slide-name');
+    handleTextElements('.text-slide-job');
+  }
 
   // Expose goToSlide function globally
   window.goToSlide = function(slideIndex) {
@@ -52,7 +56,6 @@ function initializeSwiper() {
 
 // Load Swiper resources and initialize
 function loadSwiperResources() {
-  // Check if Swiper is already loaded
   if (typeof Swiper === 'function') {
     initializeSwiper();
     return;
